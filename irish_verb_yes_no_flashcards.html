@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irish Verb Yes/No Flashcards</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .card {
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .inner {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .inner {
+      transform: rotateY(180deg);
+    }
+
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-size: 1.2rem;
+    }
+
+    .front {
+      background: white;
+    }
+
+    .back {
+      background: #27ae60;
+      color: white;
+      transform: rotateY(180deg);
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .neg {
+      background: #c0392b;
+    }
+
+    .hint {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  const cards = [
+    {
+      q: "An bhfuil tú anseo?",
+      yes: "Tá mé anseo.",
+      no: "Níl mé anseo."
+    },
+    {
+      q: "An dtuigeann tú Gaeilge?",
+      yes: "Tuigim Gaeilge.",
+      no: "Ní thuigim Gaeilge."
+    },
+    {
+      q: "An ólann tú caife?",
+      yes: "Ólaim caife.",
+      no: "Ní ólaim caife."
+    },
+    {
+      q: "An ith tú bricfeasta?",
+      yes: "D'ith mé bricfeasta.",
+      no: "Níor ith mé bricfeasta."
+    },
+    {
+      q: "An bhfuil carr agat?",
+      yes: "Tá carr agam.",
+      no: "Níl carr agam."
+    },
+    {
+      q: "An dtéann tú abhaile anois?",
+      yes: "Téim abhaile anois.",
+      no: "Ní théim abhaile anois."
+    }
+  ];
+
+  const grid = document.getElementById('grid');
+
+  cards.forEach(card => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card';
+
+    const inner = document.createElement('div');
+    inner.className = 'inner';
+
+    const front = document.createElement('div');
+    front.className = 'face front';
+    front.textContent = card.q;
+
+    const back = document.createElement('div');
+    back.className = 'face back';
+    back.innerHTML = `<div>${card.yes}</div><div class="hint">(click again for negative)</div>`;
+
+    let showingYes = true;
+
+    wrapper.addEventListener('click', () => {
+      if (!wrapper.classList.contains('flipped')) {
+        wrapper.classList.add('flipped');
+        back.classList.remove('neg');
+        back.innerHTML = `<div>${card.yes}</div><div class="hint">(click again for negative)</div>`;
+        showingYes = true;
+      } else if (showingYes) {
+        back.classList.add('neg');
+        back.innerHTML = `<div>${card.no}</div><div class="hint">(click to go back)</div>`;
+        showingYes = false;
+      } else {
+        wrapper.classList.remove('flipped');
+      }
+    });
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    wrapper.appendChild(inner);
+    grid.appendChild(wrapper);
+  });
+</script>
+
+</body>
+</html>
