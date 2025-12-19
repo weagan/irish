@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Irish/English Noun Flashcards</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .flashcard-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      justify-items: center;
+      margin-top: 20px;
+    }
+    .flashcard {
+      background-color: #ffffff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      width: 200px;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: transform 0.3s;
+      padding: 10px;
+    }
+    .flashcard:hover {
+      transform: scale(1.05);
+    }
+    .flashcard input {
+      margin-top: 10px;
+      padding: 8px;
+      width: 80%;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .flashcard button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    .flashcard button:hover {
+      background-color: #45a049;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-size: 1em;
+      color: black;
+    }
+    .correct-answer {
+      display: none;
+      margin-top: 10px;
+      font-size: 1em;
+      color: blue;
+    }
+
+    /* Alternate background colors for the flashcards */
+    .flashcard:nth-child(3n+1) {
+      background-color: #4CAF50; /* Green */
+    }
+    .flashcard:nth-child(3n+2) {
+      background-color: #FF9800; /* Orange */
+    }
+    .flashcard:nth-child(3n) {
+      background-color: #FFFFFF; /* White */
+    }
+  </style>
+</head>
+<body>
+  <h1>Irish/English Noun Flashcards</h1>
+  <div class="flashcard-container">
+    <!-- Flashcards for Irish Nouns -->
+    <div class="flashcard" id="card1">
+      <div class="irish">ceol</div>
+      <input type="text" id="answer1" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer1', 'music', 1, 'card1')">Check Answer</button>
+      <div class="feedback" id="feedback1"></div>
+      <div class="correct-answer" id="correct-answer1"></div>
+    </div>
+    <div class="flashcard" id="card2">
+      <div class="irish">spórt</div>
+      <input type="text" id="answer2" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer2', 'sport', 2, 'card2')">Check Answer</button>
+      <div class="feedback" id="feedback2"></div>
+      <div class="correct-answer" id="correct-answer2"></div>
+    </div>
+    <div class="flashcard" id="card3">
+      <div class="irish">seacláid</div>
+      <input type="text" id="answer3" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer3', 'chocolate', 3, 'card3')">Check Answer</button>
+      <div class="feedback" id="feedback3"></div>
+      <div class="correct-answer" id="correct-answer3"></div>
+    </div>
+    <div class="flashcard" id="card4">
+      <div class="irish">aimsir</div>
+      <input type="text" id="answer4" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer4', 'weather', 4, 'card4')">Check Answer</button>
+      <div class="feedback" id="feedback4"></div>
+      <div class="correct-answer" id="correct-answer4"></div>
+    </div>
+    <div class="flashcard" id="card5">
+      <div class="irish">scannáin</div>
+      <input type="text" id="answer5" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer5', 'movies', 5, 'card5')">Check Answer</button>
+      <div class="feedback" id="feedback5"></div>
+      <div class="correct-answer" id="correct-answer5"></div>
+    </div>
+    <div class="flashcard" id="card6">
+      <div class="irish">canadh</div>
+      <input type="text" id="answer6" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer6', 'singing', 6, 'card6')">Check Answer</button>
+      <div class="feedback" id="feedback6"></div>
+      <div class="correct-answer" id="correct-answer6"></div>
+    </div>
+    <div class="flashcard" id="card7">
+      <div class="irish">snámh</div>
+      <input type="text" id="answer7" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer7', 'swimming', 7, 'card7')">Check Answer</button>
+      <div class="feedback" id="feedback7"></div>
+      <div class="correct-answer" id="correct-answer7"></div>
+    </div>
+    <div class="flashcard" id="card8">
+      <div class="irish">Gaeilge</div>
+      <input type="text" id="answer8" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer8', 'Irish (language)', 8, 'card8')">Check Answer</button>
+      <div class="feedback" id="feedback8"></div>
+      <div class="correct-answer" id="correct-answer8"></div>
+    </div>
+    <div class="flashcard" id="card9">
+      <div class="irish">tiomáint</div>
+      <input type="text" id="answer9" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer9', 'driving', 9, 'card9')">Check Answer</button>
+      <div class="feedback" id="feedback9"></div>
+      <div class="correct-answer" id="correct-answer9"></div>
+    </div>
+    <div class="flashcard" id="card10">
+      <div class="irish">léamh</div>
+      <input type="text" id="answer10" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer10', 'reading', 10, 'card10')">Check Answer</button>
+      <div class="feedback" id="feedback10"></div>
+      <div class="correct-answer" id="correct-answer10"></div>
+    </div>
+    <div class="flashcard" id="card11">
+      <div class="irish">chlann</div>
+      <input type="text" id="answer11" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer11', 'family', 11, 'card11')">Check Answer</button>
+      <div class="feedback" id="feedback11"></div>
+      <div class="correct-answer" id="correct-answer11"></div>
+    </div>
+    <div class="flashcard" id="card12">
+      <div class="irish">cara</div>
+      <input type="text" id="answer12" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer12', 'friend', 12, 'card12')">Check Answer</button>
+      <div class="feedback" id="feedback12"></div>
+      <div class="correct-answer" id="correct-answer12"></div>
+    </div>
+    <div class="flashcard" id="card13">
+      <div class="irish">tart</div>
+      <input type="text" id="answer13" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer13', 'thirst', 13, 'card13')">Check Answer</button>
+      <div class="feedback" id="feedback13"></div>
+      <div class="correct-answer" id="correct-answer13"></div>
+    </div>
+    <div class="flashcard" id="card14">
+      <div class="irish">ocras</div>
+      <input type="text" id="answer14" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer14', 'hunger', 14, 'card14')">Check Answer</button>
+      <div class="feedback" id="feedback14"></div>
+      <div class="correct-answer" id="correct-answer14"></div>
+    </div>
+    <div class="flashcard" id="card15">
+      <div class="irish">áthas</div>
+      <input type="text" id="answer15" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer15', 'joy', 15, 'card15')">Check Answer</button>
+      <div class="feedback" id="feedback15"></div>
+      <div class="correct-answer" id="correct-answer15"></div>
+    </div>
+    <div class="flashcard" id="card16">
+      <div class="irish">eagla</div>
+      <input type="text" id="answer16" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer16', 'fear', 16, 'card16')">Check Answer</button>
+      <div class="feedback" id="feedback16"></div>
+      <div class="correct-answer" id="correct-answer16"></div>
+    </div>
+    <div class="flashcard" id="card17">
+      <div class="irish">brón</div>
+      <input type="text" id="answer17" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer17', 'sadness', 17, 'card17')">Check Answer</button>
+      <div class="feedback" id="feedback17"></div>
+      <div class="correct-answer" id="correct-answer17"></div>
+    </div>
+    <div class="flashcard" id="card18">
+      <div class="irish">arán</div>
+      <input type="text" id="answer18" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer18', 'bread', 18, 'card18')">Check Answer</button>
+      <div class="feedback" id="feedback18"></div>
+      <div class="correct-answer" id="correct-answer18"></div>
+    </div>
+    <div class="flashcard" id="card19">
+      <div class="irish">im</div>
+      <input type="text" id="answer19" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer19', 'butter', 19, 'card19')">Check Answer</button>
+      <div class="feedback" id="feedback19"></div>
+      <div class="correct-answer" id="correct-answer19"></div>
+    </div>
+    <div class="flashcard" id="card20">
+      <div class="irish">feoil</div>
+      <input type="text" id="answer20" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer20', 'meat', 20, 'card20')">Check Answer</button>
+      <div class="feedback" id="feedback20"></div>
+      <div class="correct-answer" id="correct-answer20"></div>
+    </div>
+    <div class="flashcard" id="card21">
+      <div class="irish">tae</div>
+      <input type="text" id="answer21" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer21', 'tea', 21, 'card21')">Check Answer</button>
+      <div class="feedback" id="feedback21"></div>
+      <div class="correct-answer" id="correct-answer21"></div>
+    </div>
+    <div class="flashcard" id="card22">
+      <div class="irish">uibheacha</div>
+      <input type="text" id="answer22" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer22', 'eggs', 22, 'card22')">Check Answer</button>
+      <div class="feedback" id="feedback22"></div>
+      <div class="correct-answer" id="correct-answer22"></div>
+    </div>
+    <div class="flashcard" id="card23">
+      <div class="irish">ainm</div>
+      <input type="text" id="answer23" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer23', 'name', 23, 'card23')">Check Answer</button>
+      <div class="feedback" id="feedback23"></div>
+      <div class="correct-answer" id="correct-answer23"></div>
+    </div>
+    <div class="flashcard" id="card24">
+      <div class="irish">múinteoir</div>
+      <input type="text" id="answer24" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer24', 'teacher', 24, 'card24')">Check Answer</button>
+      <div class="feedback" id="feedback24"></div>
+      <div class="correct-answer" id="correct-answer24"></div>
+    </div>
+    <div class="flashcard" id="card25">
+      <div class="irish">dochtúir</div>
+      <input type="text" id="answer25" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer25', 'doctor', 25, 'card25')">Check Answer</button>
+      <div class="feedback" id="feedback25"></div>
+      <div class="correct-answer" id="correct-answer25"></div>
+    </div>
+    <div class="flashcard" id="card26">
+      <div class="irish">feirmeoir</div>
+      <input type="text" id="answer26" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer26', 'farmer', 26, 'card26')">Check Answer</button>
+      <div class="feedback" id="feedback26"></div>
+      <div class="correct-answer" id="correct-answer26"></div>
+    </div>
+    <div class="flashcard" id="card27">
+      <div class="irish">imreoir peile</div>
+      <input type="text" id="answer27" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer27', 'football player', 27, 'card27')">Check Answer</button>
+      <div class="feedback" id="feedback27"></div>
+      <div class="correct-answer" id="correct-answer27"></div>
+    </div>
+    <div class="flashcard" id="card28">
+      <div class="irish">cócaire</div>
+      <input type="text" id="answer28" placeholder="Your answer here...">
+      <button onclick="checkAnswer('answer28', 'cook', 28, 'card28')">Check Answer</button>
+      <div class="feedback" id="feedback28"></div>
+      <div class="correct-answer" id="correct-answer28"></div>
+    </div>
+  </div>
+
+  <script>
+    let attempts = {};
+
+    function checkAnswer(inputId, correctAnswer, cardId, cardElementId) {
+      let userAnswer = document.getElementById(inputId).value.trim().toLowerCase();
+      let feedbackElement = document.getElementById("feedback" + cardId);
+      let correctAnswerElement = document.getElementById("correct-answer" + cardId);
+      let cardElement = document.getElementById(cardElementId);
+
+      if (!attempts[cardId]) {
+        attempts[cardId] = 0;
+      }
+
+      if (userAnswer === correctAnswer.toLowerCase()) {
+        feedbackElement.textContent = "Correct!";
+        feedbackElement.style.color = "green";
+        correctAnswerElement.style.display = "none";
+        attempts[cardId] = 0; // Reset attempt count
+      } else {
+        attempts[cardId]++;
+        feedbackElement.textContent = "Try again!";
+        feedbackElement.style.color = "red";
+
+        if (attempts[cardId] >= 3) {
+          correctAnswerElement.textContent = "Correct Answer: " + correctAnswer;
+          correctAnswerElement.style.display = "block";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
