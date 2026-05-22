@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mary Cost Calculator</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+      color: #222;
+    }
+    h1 {
+      margin-bottom: 0.2em;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+    }
+    legend {
+      font-weight: 600;
+      padding: 0 6px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    input[type="number"] {
+      width: 120px;
+      padding: 4px 6px;
+      font-size: 0.95rem;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      background: #0066cc;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    button:hover {
+      background: #0052a3;
+    }
+    .results {
+      margin-top: 18px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      background: #f0f7ff;
+      border: 1px solid #c5ddff;
+    }
+    .results h2 {
+      margin-top: 0;
+    }
+    .results p {
+      margin: 4px 0;
+    }
+    .note {
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mary Cost Calculator</h1>
+    <p>Plug in Mary’s numbers and calculate how long her assets last before she runs out of money.</p>
+
+    <form id="maryForm" onsubmit="event.preventDefault(); calculateMary();">
+      <fieldset>
+        <legend>Monthly Costs</legend>
+        <div class="grid">
+          <label>
+            Nursing home ($/month)
+            <input type="number" id="nursing_home" value="7000" min="0" step="1">
+          </label>
+          <label>
+            Condo fees ($/month)
+            <input type="number" id="condo_fees" value="800" min="0" step="1">
+          </label>
+          <label>
+            Blue Cross ($/month)
+            <input type="number" id="blue_cross" value="288" min="0" step="1">
+          </label>
+          <label>
+            Utilities ($/month)
+            <input type="number" id="utilities" value="200" min="0" step="1">
+          </label>
+          <label>
+            Car insurance ($/month)
+            <input type="number" id="car_insurance" value="800" min="0" step="1">
+          </label>
+          <label>
+            Church donations ($/month)
+            <input type="number" id="church" value="500" min="0" step="1">
+          </label>
+          <label>
+            Life insurance ($/month)
+            <input type="number" id="life_insurance" value="100" min="0" step="1">
+          </label>
+          <label>
+            Other property costs ($/month)
+            <input type="number" id="other_property" value="100" min="0" step="1">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Annual Costs</legend>
+        <div class="grid">
+          <label>
+            Property tax ($/year)
+            <input type="number" id="property_tax" value="7000" min="0" step="1">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Income & Assets</legend>
+        <div class="grid">
+          <label>
+            Monthly income (e.g., Social Security)
+            <input type="number" id="monthly_income" value="1500" min="0" step="1">
+          </label>
+          <label>
+            Starting assets ($)
+            <input type="number" id="starting_assets" value="240000" min="0" step="100">
+          </label>
+        </div>
+      </fieldset>
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <div class="results" id="results" style="display:none;">
+      <h2>Results</h2>
+      <p id="total_monthly_costs"></p>
+      <p id="monthly_income_out"></p>
+      <p id="monthly_deficit"></p>
+      <p id="starting_assets_out"></p>
+      <hr>
+      <p id="months_until_broke"></p>
+      <p id="years_until_broke"></p>
+      <p class="note">
+        Note: This is a straight-line projection. It ignores investment returns, inflation, tax changes, and policy changes.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function getNumber(id) {
+      const raw = document.getElementById(id).value;
+      const n = parseFloat(raw);
+      if (isNaN(n) || n < 0) return 0;
+      return n;
+    }
+
+    function formatMoney(value) {
+      return value.toFixed(2);
+    }
+
+    function calculateMary() {
+      const nursing_home   = getNumber("nursing_home");
+      const condo_fees     = getNumber("condo_fees");
+      const blue_cross     = getNumber("blue_cross");
+      const utilities      = getNumber("utilities");
+      const car_insurance  = getNumber("car_insurance");
+      const church         = getNumber("church");
+      const life_insurance = getNumber("life_insurance");
+      const other_property = getNumber("other_property");
+
+      const property_tax   = getNumber("property_tax");
+      const monthly_income = getNumber("monthly_income");
+      const starting_assets = getNumber("starting_assets");
+
+      const monthly_from_annual = property_tax / 12.0;
+
+      const total_monthly_costs =
+        nursing_home +
+        condo_fees +
+        blue_cross +
+        utilities +
+        car_insurance +
+        church +
+        life_insurance +
+        other_property +
+        monthly_from_annual;
+
+      const monthly_deficit = total_monthly_costs - monthly_income;
+
+      const resultsDiv = document.getElementById("results");
+      const totalMonthlyEl = document.getElementById("total_monthly_costs");
+      const monthlyIncomeEl = document.getElementById("monthly_income_out");
+      const monthlyDeficitEl = document.getElementById("monthly_deficit");
+      const startingAssetsEl = document.getElementById("starting_assets_out");
+      const monthsUntilBrokeEl = document.getElementById("months_until_broke");
+      const yearsUntilBrokeEl = document.getElementById("years_until_broke");
+
+      totalMonthlyEl.textContent =
+        "Total monthly costs (including property tax): $" + formatMoney(total_monthly_costs);
+      monthlyIncomeEl.textContent =
+        "Monthly income: $" + formatMoney(monthly_income);
+      monthlyDeficitEl.textContent =
+        "Monthly deficit: $" + formatMoney(monthly_deficit);
+      startingAssetsEl.textContent =
+        "Starting assets: $" + formatMoney(starting_assets);
+
+      if (monthly_deficit <= 0) {
+        monthsUntilBrokeEl.textContent =
+          "Mary does not run out of money with these numbers (no monthly deficit).";
+        yearsUntilBrokeEl.textContent = "";
+      } else if (starting_assets <= 0) {
+        monthsUntilBrokeEl.textContent =
+          "Mary is already out of assets with these numbers.";
+        yearsUntilBrokeEl.textContent = "";
+      } else {
+        const months_until_broke = starting_assets / monthly_deficit;
+        const years_until_broke = months_until_broke / 12.0;
+
+        monthsUntilBrokeEl.textContent =
+          "Mary runs out of money in: " + months_until_broke.toFixed(2) + " months.";
+        yearsUntilBrokeEl.textContent =
+          "Which is: " + years_until_broke.toFixed(2) + " years.";
+      }
+
+      resultsDiv.style.display = "block";
+    }
+  </script>
+</body>
+</html>
