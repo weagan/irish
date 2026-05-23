@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Irish S Mutation Card Game</title>
+<style>
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+p.subtitle {
+  text-align: center;
+  color: #64748b;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #e2e8f0;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.word {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #0f172a;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s, opacity 0.2s;
+  flex: 1;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-mutate {
+  background: #059669;
+  color: white;
+}
+
+.btn-mutate:hover:not(:disabled) {
+  background: #047857;
+}
+
+.btn-no-mutate {
+  background: #475569;
+  color: white;
+}
+
+.btn-no-mutate:hover:not(:disabled) {
+  background: #334155;
+}
+
+.result {
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  min-height: 27px;
+  line-height: 1.4;
+}
+
+.gender-tag {
+  font-size: 13px;
+  font-weight: normal;
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.correct {
+  color: #059669;
+}
+
+.incorrect {
+  color: #dc2626;
+}
+
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
+</style>
+</head>
+<body>
+
+<h1>Irish “An + S-word” Mutation Game</h1>
+<p class="subtitle">Select the correct grammar rule for each singular noun following the definite article <strong>"an"</strong>.</p>
+
+<div class="container" id="game"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+// Dataset with explicit gender markers included for presentation strings
+const words = [
+  // --- TS MUTATION RULES (Feminine Nouns / Special Cases) ---
+  { base: "sráid", rule: "ts", gender: "Baininscneach (f)" },       
+  { base: "seachtain", rule: "ts", gender: "Baininscneach (f)" },   
+  { base: "síocháin", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "seirbhís", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "seoid", rule: "ts", gender: "Baininscneach (f)" },       
+  { base: "súil", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "samhlaíocht", rule: "ts", gender: "Baininscneach (f)" }, 
+  { base: "siúlóid", rule: "ts", gender: "Baininscneach (f)" },     
+  { base: "saoirse", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "subh", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "seoidín", rule: "ts", gender: "Baininscneach (f)" },     
+  { base: "stail", rule: "ts", gender: "Baininscneach (f)" },       
+  { base: "sráidbhaile", rule: "ts", gender: "Baininscneach (f)" }, 
+  { base: "sreang", rule: "ts", gender: "Baininscneach (f)" },      
+  { base: "slat", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "slí", rule: "ts", gender: "Baininscneach (f)" },         
+  { base: "slis", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "slatach", rule: "ts", gender: "Baininscneach (f)" },     
+  { base: "smeach", rule: "ts", gender: "Baininscneach (f)" },      
+  { base: "smig", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "snáthaid", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "snis", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "srón", rule: "ts", gender: "Baininscneach (f)" },        
+  { base: "sraith", rule: "ts", gender: "Baininscneach (f)" },      
+  { base: "sruthair", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "srian", rule: "ts", gender: "Baininscneach (f)" },       
+  { base: "stailc", rule: "ts", gender: "Baininscneach (f)" },      
+  { base: "scuab", rule: "ts", gender: "Baininscneach (f)" },       
+  { base: "scornach", rule: "ts", gender: "Baininscneach (f)" },    
+  { base: "sciath", rule: "ts", gender: "Baininscneach (f)" },      
+
+  // --- NO MUTATION RULES (Masculine Nouns or Blocked Clusters like Sc, Sp, St, Sm) ---
+  { base: "scoil", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },      
+  { base: "spás", rule: "none", gender: "Firinscneach (m) - Blocked by Sp-" },       
+  { base: "stair", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },      
+  { base: "spéis", rule: "none", gender: "Baininscneach (f) - Blocked by Sp-" },      
+  { base: "sprioc", rule: "none", gender: "Baininscneach (f) - Blocked by Sp-" },     
+  { base: "stoirm", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },     
+  { base: "stíl", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },       
+  { base: "scéal", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "scéim", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },      
+  { base: "siopa", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "seans", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "samhradh", rule: "none", gender: "Firinscneach (m)" },   
+  { base: "solas", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "snámh", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "snáth", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "spiorad", rule: "none", gender: "Firinscneach (m)" },    
+  { base: "spraoi", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "struchtúr", rule: "none", gender: "Firinscneach (m)" },  
+  { base: "suíochán", rule: "none", gender: "Firinscneach (m)" },   
+  { base: "sásamh", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "sampla", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "scáth", rule: "none", gender: "Firinscneach (m)" },      
+  { base: "scil", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },       
+  { base: "scrúdú", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "scannán", rule: "none", gender: "Firinscneach (m)" },    
+  { base: "seomra", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "siosúr", rule: "none", gender: "Firinscneach (m)" },     
+  { base: "smuaineadh", rule: "none", gender: "Firinscneach (m)" }, 
+  { base: "súgradh", rule: "none", gender: "Firinscneach (m)" },    
+  { base: "slios", rule: "none", gender: "Firinscneach (m)" },      
+];
+
+const tsWords = words.filter(w => w.rule === "ts").slice(0, 30);
+const noneWords = words.filter(w => w.rule === "none").slice(0, 30);
+const gameWords = [...tsWords, ...noneWords];
+
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+
+function playBuzzer() {
+  initAudio();
+  if (!audioCtx) return;
+
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  osc1.type = 'sawtooth';
+  osc2.type = 'square';
+  
+  osc1.frequency.setValueAtTime(140, audioCtx.currentTime);
+  osc2.frequency.setValueAtTime(143, audioCtx.currentTime);
+
+  gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+
+  osc1.connect(gainNode);
+  osc2.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  osc1.start();
+  osc2.start();
+  osc1.stop(audioCtx.currentTime + 0.6);
+  osc2.stop(audioCtx.currentTime + 0.6);
+}
+
+const canvas = document.getElementById("confetti-canvas");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function spawnConfetti() {
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      vx: (Math.random() - 0.5) * 15,
+      vy: (Math.random() - 0.7) * 15,
+      size: Math.random() * 8 + 4,
+      color: `hsl(${Math.random() * 360}, 80%, 50%)`,
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 10
+    });
+  }
+}
+
+function updateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach((p, index) => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.4;
+    p.vx *= 0.98;
+    p.rotation += p.rotationSpeed;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate((p.rotation * Math.PI) / 180);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+    ctx.restore();
+
+    if (p.y > canvas.height) particles.splice(index, 1);
+  });
+  requestAnimationFrame(updateConfetti);
+}
+requestAnimationFrame(updateConfetti);
+
+function shuffle(array) {
+  let arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function mutateWordString(word, rule) {
+  if (rule === "ts") return "ts" + word.slice(1);
+  return word;
+}
+
+function render() {
+  const game = document.getElementById("game");
+  game.innerHTML = "";
+
+  const shuffled = shuffle(gameWords);
+
+  shuffled.forEach((w) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const wordDiv = document.createElement("div");
+    wordDiv.className = "word";
+    wordDiv.innerText = "an " + w.base;
+
+    const btnGroup = document.createElement("div");
+    btnGroup.className = "btn-group";
+
+    const mutateBtn = document.createElement("button");
+    mutateBtn.className = "btn-mutate";
+    mutateBtn.innerText = "Mutate (ts-)";
+
+    const noMutateBtn = document.createElement("button");
+    noMutateBtn.className = "btn-no-mutate";
+    noMutateBtn.innerText = "No Mutate";
+
+    const result = document.createElement("div");
+    result.className = "result";
+
+    const handleChoice = (chosenRule) => {
+      mutateBtn.disabled = true;
+      noMutateBtn.disabled = true;
+      
+      const textPrefix = (w.rule === chosenRule) ? "✓ an " : "✗ an ";
+      result.className = (w.rule === chosenRule) ? "result correct" : "result incorrect";
+      
+      // Inserts the answer string with its corresponding gender and context
+      result.innerHTML = `${textPrefix}${mutateWordString(w.base, w.rule)} <span class="gender-tag">${w.gender}</span>`;
+
+      if (w.rule === chosenRule) {
+        spawnConfetti();
+      } else {
+        playBuzzer();
+      }
+    };
+
+    mutateBtn.onclick = () => handleChoice("ts");
+    noMutateBtn.onclick = () => handleChoice("none");
+
+    btnGroup.appendChild(mutateBtn);
+    btnGroup.appendChild(noMutateBtn);
+    
+    card.appendChild(wordDiv);
+    card.appendChild(btnGroup);
+    card.appendChild(result);
+
+    game.appendChild(card);
+  });
+}
+
+render();
+</script>
+
+</body>
+</html>
