@@ -140,71 +140,64 @@ button:disabled {
 <canvas id="confetti-canvas"></canvas>
 
 <script>
-// Dataset with explicit gender markers included for presentation strings
+// Dataset verified against Teanglann grammar requirements
 const words = [
   // --- TS MUTATION RULES (Feminine Nouns / Special Cases) ---
-  { base: "sráid", rule: "ts", gender: "Baininscneach (f)" },       
-  { base: "seachtain", rule: "ts", gender: "Baininscneach (f)" },   
-  { base: "síocháin", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "seirbhís", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "seoid", rule: "ts", gender: "Baininscneach (f)" },       
-  { base: "súil", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "samhlaíocht", rule: "ts", gender: "Baininscneach (f)" }, 
-  { base: "siúlóid", rule: "ts", gender: "Baininscneach (f)" },     
-  { base: "saoirse", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "subh", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "seoidín", rule: "ts", gender: "Baininscneach (f)" },     
-  { base: "stail", rule: "ts", gender: "Baininscneach (f)" },       
-  { base: "sráidbhaile", rule: "ts", gender: "Baininscneach (f)" }, 
-  { base: "sreang", rule: "ts", gender: "Baininscneach (f)" },      
-  { base: "slat", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "slí", rule: "ts", gender: "Baininscneach (f)" },         
-  { base: "slis", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "slatach", rule: "ts", gender: "Baininscneach (f)" },     
-  { base: "smeach", rule: "ts", gender: "Baininscneach (f)" },      
-  { base: "smig", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "snáthaid", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "snis", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "srón", rule: "ts", gender: "Baininscneach (f)" },        
-  { base: "sraith", rule: "ts", gender: "Baininscneach (f)" },      
-  { base: "sruthair", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "srian", rule: "ts", gender: "Baininscneach (f)" },       
-  { base: "stailc", rule: "ts", gender: "Baininscneach (f)" },      
-  { base: "scuab", rule: "ts", gender: "Baininscneach (f)" },       
-  { base: "scornach", rule: "ts", gender: "Baininscneach (f)" },    
-  { base: "sciath", rule: "ts", gender: "Baininscneach (f)" },      
+  { base: "sráid", rule: "ts", mutated: "tsráid", gender: "Baininscneach (f)" },       
+  { base: "seachtain", rule: "ts", mutated: "tseachtain", gender: "Baininscneach (f)" },   
+  { base: "síocháin", rule: "ts", mutated: "tsíocháin", gender: "Baininscneach (f)" },    
+  { base: "seirbhís", rule: "ts", mutated: "tseirbhís", gender: "Baininscneach (f)" },    
+  { base: "seoid", rule: "ts", mutated: "tseoid", gender: "Baininscneach (f)" },       
+  { base: "súil", rule: "ts", mutated: "tsúil", gender: "Baininscneach (f)" },        
+  { base: "samhlaíocht", rule: "ts", mutated: "tsamhlaíocht", gender: "Baininscneach (f)" }, 
+  { base: "siúlóid", rule: "ts", mutated: "tsiúlóid", gender: "Baininscneach (f)" },     
+  { base: "saoirse", rule: "ts", mutated: "tsaoirse", gender: "Baininscneach (f)" },    
+  { base: "subh", rule: "ts", mutated: "tsubh", gender: "Baininscneach (f)" },        
+  { base: "sráidbhaile", rule: "ts", mutated: "tsráidbhaile", gender: "Baininscneach (f)" }, 
+  { base: "sreang", rule: "ts", mutated: "tsreang", gender: "Baininscneach (f)" },      
+  { base: "slat", rule: "ts", mutated: "tslat", gender: "Baininscneach (f)" },        
+  { base: "slí", rule: "ts", mutated: "tslí", gender: "Baininscneach (f)" },         
+  { base: "smeach", rule: "ts", mutated: "tsmeach", gender: "Baininscneach (f)" },      
+  { base: "smig", rule: "ts", mutated: "tsmig", gender: "Baininscneach (f)" },        
+  { base: "snáthaid", rule: "ts", mutated: "tsnáthaid", gender: "Baininscneach (f)" },    
+  { base: "srón", rule: "ts", mutated: "tsrón", gender: "Baininscneach (f)" },        
+  { base: "sraith", rule: "ts", mutated: "tsraith", gender: "Baininscneach (f)" },      
+  { base: "srian", rule: "ts", mutated: "tsrian", gender: "Baininscneach (f)" },       
 
-  // --- NO MUTATION RULES (Masculine Nouns or Blocked Clusters like Sc, Sp, St, Sm) ---
-  { base: "scoil", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },      
-  { base: "spás", rule: "none", gender: "Firinscneach (m) - Blocked by Sp-" },       
-  { base: "stair", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },      
-  { base: "spéis", rule: "none", gender: "Baininscneach (f) - Blocked by Sp-" },      
-  { base: "sprioc", rule: "none", gender: "Baininscneach (f) - Blocked by Sp-" },     
-  { base: "stoirm", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },     
-  { base: "stíl", rule: "none", gender: "Baininscneach (f) - Blocked by St-" },       
-  { base: "scéal", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "scéim", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },      
-  { base: "siopa", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "seans", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "samhradh", rule: "none", gender: "Firinscneach (m)" },   
-  { base: "solas", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "snámh", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "snáth", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "spiorad", rule: "none", gender: "Firinscneach (m)" },    
-  { base: "spraoi", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "struchtúr", rule: "none", gender: "Firinscneach (m)" },  
-  { base: "suíochán", rule: "none", gender: "Firinscneach (m)" },   
-  { base: "sásamh", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "sampla", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "scáth", rule: "none", gender: "Firinscneach (m)" },      
-  { base: "scil", rule: "none", gender: "Baininscneach (f) - Blocked by Sc-" },       
-  { base: "scrúdú", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "scannán", rule: "none", gender: "Firinscneach (m)" },    
-  { base: "seomra", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "siosúr", rule: "none", gender: "Firinscneach (m)" },     
-  { base: "smuaineadh", rule: "none", gender: "Firinscneach (m)" }, 
-  { base: "súgradh", rule: "none", gender: "Firinscneach (m)" },    
-  { base: "slios", rule: "none", gender: "Firinscneach (m)" },      
+  // --- NO MUTATION RULES (Masculine Nouns or Blocked Clusters like Sc, Sp, St) ---
+  { base: "scoil", rule: "none", mutated: "scoil", gender: "Baininscneach (f) - Blocked by Sc-" },      
+  { base: "spás", rule: "none", mutated: "spás", gender: "Firinscneach (m) - Blocked by Sp-" },       
+  { base: "stair", rule: "none", mutated: "stair", gender: "Baininscneach (f) - Blocked by St-" },      
+  { base: "spéis", rule: "none", mutated: "spéis", gender: "Baininscneach (f) - Blocked by Sp-" },      
+  { base: "sprioc", rule: "none", mutated: "sprioc", gender: "Baininscneach (f) - Blocked by Sp-" },     
+  { base: "stoirm", rule: "none", mutated: "stoirm", gender: "Baininscneach (f) - Blocked by St-" },     
+  { base: "stíl", rule: "none", mutated: "stíl", gender: "Baininscneach (f) - Blocked by St-" },       
+  { base: "stailc", rule: "none", mutated: "stailc", gender: "Baininscneach (f) - Blocked by St-" },      
+  { base: "scuab", rule: "none", mutated: "scuab", gender: "Baininscneach (f) - Blocked by Sc-" },       
+  { base: "scornach", rule: "none", mutated: "scornach", gender: "Baininscneach (f) - Blocked by Sc-" },    
+  { base: "sciath", rule: "none", mutated: "sciath", gender: "Firinscneach (m) / Blocked by Sc-" },      
+  { base: "scéal", rule: "none", mutated: "scéal", gender: "Firinscneach (m)" },      
+  { base: "scéim", rule: "none", mutated: "scéim", gender: "Baininscneach (f) - Blocked by Sc-" },      
+  { base: "siopa", rule: "none", mutated: "siopa", gender: "Firinscneach (m)" },      
+  { base: "seans", rule: "none", mutated: "seans", gender: "Firinscneach (m)" },      
+  { base: "samhradh", rule: "none", mutated: "samhradh", gender: "Firinscneach (m)" },   
+  { base: "solas", rule: "none", mutated: "solas", gender: "Firinscneach (m)" },      
+  { base: "snámh", rule: "none", mutated: "snámh", gender: "Firinscneach (m)" },      
+  { base: "snáth", rule: "none", mutated: "snáth", gender: "Firinscneach (m)" },      
+  { base: "spiorad", rule: "none", mutated: "spiorad", gender: "Firinscneach (m)" },    
+  { base: "spraoi", rule: "none", mutated: "spraoi", gender: "Firinscneach (m)" },     
+  { base: "struchtúr", rule: "none", mutated: "struchtúr", gender: "Firinscneach (m)" },  
+  { base: "suíochán", rule: "none", mutated: "suíochán", gender: "Firinscneach (m)" },   
+  { base: "sásamh", rule: "none", mutated: "sásamh", gender: "Firinscneach (m)" },     
+  { base: "sampla", rule: "none", mutated: "sampla", gender: "Firinscneach (m)" },     
+  { base: "scáth", rule: "none", mutated: "scáth", gender: "Firinscneach (m)" },      
+  { base: "scil", rule: "none", mutated: "scil", gender: "Baininscneach (f) - Blocked by Sc-" },       
+  { base: "scrúdú", rule: "none", mutated: "scrúdú", gender: "Firinscneach (m)" },     
+  { base: "scannán", rule: "none", mutated: "scannán", gender: "Firinscneach (m)" },    
+  { base: "seomra", rule: "none", mutated: "seomra", gender: "Firinscneach (m)" },     
+  { base: "siosúr", rule: "none", mutated: "siosúr", gender: "Firinscneach (m)" },     
+  { base: "súgradh", rule: "none", mutated: "súgradh", gender: "Firinscneach (m)" },    
+  { base: "slios", rule: "none", mutated: "slios", gender: "Firinscneach (m)" },      
 ];
 
 const tsWords = words.filter(w => w.rule === "ts").slice(0, 30);
@@ -302,11 +295,6 @@ function shuffle(array) {
   return arr;
 }
 
-function mutateWordString(word, rule) {
-  if (rule === "ts") return "ts" + word.slice(1);
-  return word;
-}
-
 function render() {
   const game = document.getElementById("game");
   game.innerHTML = "";
@@ -339,13 +327,13 @@ function render() {
       mutateBtn.disabled = true;
       noMutateBtn.disabled = true;
       
-      const textPrefix = (w.rule === chosenRule) ? "✓ an " : "✗ an ";
-      result.className = (w.rule === chosenRule) ? "result correct" : "result incorrect";
+      const isCorrect = (w.rule === chosenRule);
+      const textPrefix = isCorrect ? "✓ an " : "✗ an ";
+      result.className = isCorrect ? "result correct" : "result incorrect";
       
-      // Inserts the answer string with its corresponding gender and context
-      result.innerHTML = `${textPrefix}${mutateWordString(w.base, w.rule)} <span class="gender-tag">${w.gender}</span>`;
+      result.innerHTML = `${textPrefix}${w.mutated} <span class="gender-tag">${w.gender}</span>`;
 
-      if (w.rule === chosenRule) {
+      if (isCorrect) {
         spawnConfetti();
       } else {
         playBuzzer();
